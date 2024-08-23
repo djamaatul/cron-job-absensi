@@ -31,9 +31,11 @@ console.log(`ABSENSI MASUK START: ${[...intervalMasuk.seconds]} ${[...intervalMa
 new CronJob(
 	`${[...intervalMasuk.seconds]} ${[...intervalMasuk.minutes]} ${[...intervalMasuk.hours]} * * *`,
 	async function () {
+		console.log('Execute Masuk..')
 		const currentTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 		const match = workerData.dataAbsensiMasuk.find((e) => e.tanggalMasuk === currentTime);
 		if (!match) return;
+		console.log('MATCH!', match)
 
 		const { tanggalMasuk, ...body } = match;
 		const Cookie = await login();

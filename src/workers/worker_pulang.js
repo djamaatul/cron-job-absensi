@@ -30,12 +30,12 @@ console.log(`ABSENSI PULANG START: ${[...intervalPulang.seconds]} ${[...interval
 new CronJob(
 	`${[...intervalPulang.seconds]} ${[...intervalPulang.minutes]} ${[...intervalPulang.hours]} * * *`,
 	async function () {
-
+		console.log('Execute Pulang..')
 		const currentTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 		const match = workerData.dataAbsensiPulang.find((e) => e.tanggalPulang === currentTime);
-
 		if (!match) return;
-
+		console.log('MATCH!', match)
+		
 		const { tanggalPulang, ...body } = match;
 
 		const Cookie = await login();
