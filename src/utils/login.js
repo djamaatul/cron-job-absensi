@@ -9,7 +9,7 @@ const login = async () => {
 			username: process.env.USERNAME,
 			password: process.env.PASSWORD
 		})
-	}).then(e => `${e.headers.getSetCookie()}`.split(',').join(';')).catch(e=> e);
+	}).then(e => e.headers.getSetCookie().join(';')).catch(()=> null);
 };
 
 export default login
