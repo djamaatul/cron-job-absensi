@@ -1,9 +1,15 @@
 import { CronJob } from 'cron';
 import { parentPort, workerData } from 'worker_threads'
 import login from '../utils/login.js';
+import moment from 'moment';
+import getRandomLocation from '../utils/getRandomLocation.js';
 
 const absensiMasuk = async ({ headers, body } = {}) => {
-	const response = await fetch(URL_MASUK, {
+	if(!body.lokasi){
+		body.lokasi = getRandomLocation();
+	}
+
+	const response = await fetch(process.env.URL_MASUK, {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",
 			"X-Requested-With": "XMLHttpRequest",
@@ -30,9 +36,12 @@ new CronJob(
 		if (!match) return;
 
 		const { tanggalMasuk, ...body } = match;
-		await login();
+		const Cookie = await login();
 		await absensiMasuk({
-			body
+			body,
+			headers: {
+				Cookie
+			}
 		});
 	},
 	null,

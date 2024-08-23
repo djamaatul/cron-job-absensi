@@ -1,8 +1,13 @@
 import { CronJob } from 'cron';
 import { parentPort, workerData } from 'worker_threads'
 import login from '../utils/login.js';
+import moment from 'moment';
+import getRandomLocation from '../utils/getRandomLocation.js';
 
 const absensiPulang = async ({ headers, body } = {}) => {
+	if(!body.lokasi){
+		body.lokasi = getRandomLocation();
+	}
 	const response = await fetch(process.env.URL_PULANG, {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",
@@ -14,9 +19,7 @@ const absensiPulang = async ({ headers, body } = {}) => {
 		body: new URLSearchParams({
 			...body
 		})
-	}).then(async (e) => e.json()).catch(e => {
-		return e;
-	});
+	}).then(async (e) => e.json()).catch(e => e);
 	parentPort.postMessage(response);
 };
 
@@ -35,9 +38,12 @@ new CronJob(
 
 		const { tanggalPulang, ...body } = match;
 
-		await login();
+		const Cookie = await login();
 		await absensiPulang({
-			body
+			body,
+			headers: {
+				Cookie
+			}
 		});
 
 	},
